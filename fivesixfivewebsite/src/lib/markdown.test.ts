@@ -1,7 +1,7 @@
 import { getMarkdownBySlug } from './markdown';
 import fs from 'fs';
-import { remark } from 'remark'; // Import the actual 'remark'
-import remarkHtml from 'remark-html'; // Import the actual 'remark-html'
+// import { remark } from 'remark'; // Import the actual 'remark' - Removed as unused
+// import remarkHtml from 'remark-html'; // Import the actual 'remark-html' - Removed as unused
 
 // Mock the fs module
 jest.mock('fs');
