@@ -6,13 +6,15 @@ import html from 'remark-html';
 
 const contentDirectory = path.join(process.cwd(), 'src/content'); // Base directory for markdown files
 
-export interface MarkdownDocument<TFrontMatter extends Record<string, any> = Record<string, any>> {
+// Use `unknown` for a more type-safe default if the exact shape of front-matter is not known
+// Callers can provide a specific type for TFrontMatter for better type checking.
+export interface MarkdownDocument<TFrontMatter = Record<string, unknown>> {
   slug: string;
   frontMatter: TFrontMatter;
   htmlContent: string;
 }
 
-export async function getMarkdownBySlug<TFrontMatter extends Record<string, any>>(
+export async function getMarkdownBySlug<TFrontMatter = Record<string, unknown>>(
   slug: string,
   directory: string = '' // Optional subdirectory within contentDirectory
 ): Promise<MarkdownDocument<TFrontMatter>> {
@@ -32,8 +34,9 @@ export async function getMarkdownBySlug<TFrontMatter extends Record<string, any>
   try {
     fileContents = fs.readFileSync(fullPath, 'utf8');
   } catch (err) {
-    // console.error(`Error reading markdown file: ${fullPath}`, err);
-    throw new Error(`Markdown file not found or unreadable: ${fullPath}. Error: ${(err as Error).message}`);
+    // It's good practice to type the error object if you access its properties
+    const message = err instanceof Error ? err.message : String(err);
+    throw new Error(`Markdown file not found or unreadable: ${fullPath}. Error: ${message}`);
   }
 
   // Use gray-matter to parse the post metadata section
@@ -47,7 +50,7 @@ export async function getMarkdownBySlug<TFrontMatter extends Record<string, any>
 
   return {
     slug: fullSlug,
-    frontMatter: matterResult.data as TFrontMatter,
+    frontMatter: matterResult.data as TFrontMatter, // Type assertion here is okay as we expect the caller to know the shape or handle `unknown`
     htmlContent,
   };
 }
