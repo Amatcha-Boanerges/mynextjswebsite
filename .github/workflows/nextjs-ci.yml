@@ -1,0 +1,43 @@
+name: Next.js CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x] # You can adjust these Node.js versions
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: fivesixfivewebsite/package-lock.json # Path to package-lock.json
+
+    - name: Install dependencies
+      working-directory: ./fivesixfivewebsite # Specify the working directory for npm commands
+      run: npm ci
+
+    - name: Lint project
+      working-directory: ./fivesixfivewebsite
+      run: npm run lint
+
+    - name: Build project
+      working-directory: ./fivesixfivewebsite
+      run: npm run build
+
+    # If you have tests, you can add a step like this:
+    # - name: Run tests
+    #   working-directory: ./fivesixfivewebsite
+    #   run: npm test 
