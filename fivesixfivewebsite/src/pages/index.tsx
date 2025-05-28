@@ -1,8 +1,10 @@
+import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 // import Header from "@/components/Header"; // Removed direct Header import
-import Layout from "@/components/Layout"; // Added Layout import
+// import Layout from "@/components/Layout"; // Layout is now applied globally via _app.tsx
 import CTAButton from "@/components/CTAButton"; // Added CTAButton import
+import { getMarkdownBySlug, MarkdownDocument } from "@/lib/markdown"; // Import our markdown helper
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,60 +16,58 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export default function Home() {
+interface HomeFrontMatter {
+  title: string;
+  tagline: string;
+}
+
+export const getStaticProps: GetStaticProps<{
+  homeContent: MarkdownDocument<HomeFrontMatter>;
+}> = async () => {
+  const homeContent = await getMarkdownBySlug<HomeFrontMatter>('home'); // No directory needed if home.md is at src/content/home.md
+  return {
+    props: {
+      homeContent,
+    },
+  };
+};
+
+export default function Home({ homeContent }: InferGetStaticPropsType<typeof getStaticProps>) {
+  // Layout is now applied globally via _app.tsx, so we don't wrap it here again.
   return (
-    <Layout>
-      {/* The main div and existing Header removed, Layout handles structure */}
-      {/* The old main's className is mostly handled by Layout, specific styling might need adjustment if any */}
-      <div
-        className={`${geistSans.className} ${geistMono.className} flex flex-col gap-[32px] items-center sm:items-start font-[family-name:var(--font-geist-sans)] p-8 sm:p-0`}
-      >
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <p className="text-red-500">This text should be red if Tailwind is working.</p>
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/pages/index.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <CTAButton
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            label="Deploy now"
-            variant="primary"
-            className="sm:w-auto" // Retain specific width adjustments if needed
-          >
-            {/* Vercel Icon as children */}
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-          </CTAButton>
-          <CTAButton
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            label="Read our docs"
-            variant="secondary"
-            className="w-full sm:w-auto md:w-[158px]" // Retain specific width adjustments
+    <div
+      className={`${geistSans.className} ${geistMono.className} prose dark:prose-invert max-w-none p-8 sm:p-0`}
+    >
+      <h1 className="text-3xl font-bold mb-2">{homeContent.frontMatter.title}</h1>
+      <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">{homeContent.frontMatter.tagline}</p>
+      
+      {/* Render the markdown content */}
+      <div dangerouslySetInnerHTML={{ __html: homeContent.htmlContent }} />
+
+      {/* Retain CTA buttons or other static content if desired */}
+      <div className="mt-8 flex gap-4 items-center flex-col sm:flex-row not-prose"> {/* Added not-prose to exclude from prose styling*/}
+        <CTAButton
+          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
+          label="Deploy now"
+          variant="primary"
+          className="sm:w-auto"
+        >
+          <Image
+            className="dark:invert"
+            src="/vercel.svg"
+            alt="Vercel logomark"
+            width={20}
+            height={20}
           />
-        </div>
-        {/* Footer is now part of Layout */}
+        </CTAButton>
+        <CTAButton
+          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
+          label="Read our docs"
+          variant="secondary"
+          className="w-full sm:w-auto md:w-[158px]"
+        />
       </div>
-    </Layout>
+      {/* Footer is now part of Layout */}
+    </div>
   );
 }
