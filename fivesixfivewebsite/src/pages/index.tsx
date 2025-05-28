@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 // import Header from "@/components/Header"; // Removed direct Header import
 import Layout from "@/components/Layout"; // Added Layout import
+import CTAButton from "@/components/CTAButton"; // Added CTAButton import
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,12 +44,13 @@ export default function Home() {
           </li>
         </ol>
         <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
+          <CTAButton
             href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            label="Deploy now"
+            variant="primary"
+            className="sm:w-auto" // Retain specific width adjustments if needed
           >
+            {/* Vercel Icon as children */}
             <Image
               className="dark:invert"
               src="/vercel.svg"
@@ -56,16 +58,13 @@ export default function Home() {
               width={20}
               height={20}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
+          </CTAButton>
+          <CTAButton
             href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            label="Read our docs"
+            variant="secondary"
+            className="w-full sm:w-auto md:w-[158px]" // Retain specific width adjustments
+          />
         </div>
         {/* Footer is now part of Layout */}
       </div>
