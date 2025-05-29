@@ -4,3 +4,6 @@ fivesixfive/
 # Environment variables
 .env
 .env*.local 
+
+# personal file to ignore
+frequentcmd.txt
