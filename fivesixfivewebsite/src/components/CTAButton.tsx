@@ -16,17 +16,20 @@ export default function CTAButton({
   children,
   className = ''
 }: CTAButtonProps) {
-  const baseClasses = "rounded-full border border-solid transition-colors flex items-center justify-center gap-2 font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto";
+  const baseClasses = "inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2";
   
   let variantClasses = '';
   if (variant === 'primary') {
-    variantClasses = "bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc] border-transparent";
+    variantClasses = "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-lg hover:shadow-xl";
   } else if (variant === 'secondary') {
-    variantClasses = "border-black/[.08] dark:border-white/[.145] hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent";
+    variantClasses = "bg-white text-gray-900 border border-gray-300 hover:bg-gray-50 focus:ring-gray-500 shadow hover:shadow-md";
   }
 
   return (
-    <Link href={href} className={`${baseClasses} ${variantClasses} ${className}`}>
+    <Link 
+      href={href} 
+      className={`${baseClasses} ${variantClasses} ${className}`}
+    >
       {children}
       {label}
     </Link>
