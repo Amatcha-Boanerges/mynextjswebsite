@@ -5,6 +5,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 // import Layout from "@/components/Layout"; // Layout is now applied globally via _app.tsx
 import CTAButton from "@/components/CTAButton"; // Added CTAButton import
 import { getMarkdownBySlug, MarkdownDocument } from "@/lib/markdown"; // Import our markdown helper
+import TestimonialSlider from "@/components/TestimonialSlider"; // Import the slider
+import fs from 'fs'; // For reading JSON file
+import path from 'path'; // For constructing path to JSON file
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,18 +24,40 @@ interface HomeFrontMatter {
   tagline: string;
 }
 
+// Define the Testimonial type (can be moved to a shared types file later)
+interface Testimonial {
+  id: string;
+  name: string;
+  title: string;
+  quote: string;
+  avatarUrl?: string;
+}
+
 export const getStaticProps: GetStaticProps<{
   homeContent: MarkdownDocument<HomeFrontMatter>;
+  testimonials: Testimonial[];
 }> = async () => {
   const homeContent = await getMarkdownBySlug<HomeFrontMatter>('home'); // No directory needed if home.md is at src/content/home.md
+  
+  // Read testimonials data
+  const testimonialsFilePath = path.join(process.cwd(), 'src/content/testimonials.json');
+  let testimonials: Testimonial[] = [];
+  try {
+    const jsonText = fs.readFileSync(testimonialsFilePath, 'utf8');
+    testimonials = JSON.parse(jsonText);
+  } catch (error) {
+    console.error("Failed to load testimonials data:", error); // Log error if file is missing or corrupt
+  }
+
   return {
     props: {
       homeContent,
+      testimonials,
     },
   };
 };
 
-export default function Home({ homeContent }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({ homeContent, testimonials }: InferGetStaticPropsType<typeof getStaticProps>) {
   // Layout is now applied globally via _app.tsx, so we don't wrap it here again.
   return (
     <div
@@ -43,6 +68,14 @@ export default function Home({ homeContent }: InferGetStaticPropsType<typeof get
       
       {/* Render the markdown content */}
       <div dangerouslySetInnerHTML={{ __html: homeContent.htmlContent }} />
+
+      {/* Testimonial Slider Section */}
+      {testimonials && testimonials.length > 0 && (
+        <section className="my-12 not-prose"> {/* Added not-prose to exclude from prose styling*/}
+          <h2 className="text-2xl font-bold text-center mb-8">What Our Clients Say</h2>
+          <TestimonialSlider testimonials={testimonials} />
+        </section>
+      )}
 
       {/* Retain CTA buttons or other static content if desired */}
       <div className="mt-8 flex gap-4 items-center flex-col sm:flex-row not-prose"> {/* Added not-prose to exclude from prose styling*/}
