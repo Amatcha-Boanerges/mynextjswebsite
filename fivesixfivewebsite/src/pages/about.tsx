@@ -29,7 +29,7 @@ const AboutPage: NextPage<AboutPageProps> = ({ contentHtml, title }) => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const markdownFilePath = path.join(process.cwd(), 'content/about.md');
+  const markdownFilePath = path.join(process.cwd(), 'src/content/about.md');
   const fileContents = fs.readFileSync(markdownFilePath, 'utf8');
 
   // Use gray-matter to parse the post metadata section
