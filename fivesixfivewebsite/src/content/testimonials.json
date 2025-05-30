@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1",
+    "name": "Jane Doe",
+    "title": "CEO, Tech Solutions Inc.",
+    "quote": "Working with this team was a game-changer for our company. Their insights and dedication are unparalleled.",
+    "avatarUrl": "/images/avatars/jane-doe.png"
+  },
+  {
+    "id": "2",
+    "name": "John Smith",
+    "title": "Marketing Director, Creative Co.",
+    "quote": "The results speak for themselves. Our engagement and conversions have skyrocketed since partnering with them.",
+    "avatarUrl": "/images/avatars/john-smith.png"
+  },
+  {
+    "id": "3",
+    "name": "Alice Brown",
+    "title": "Founder, Startup Hub",
+    "quote": "Invaluable support and guidance. They truly understand the challenges of a growing business.",
+    "avatarUrl": "/images/avatars/alice-brown.png"
+  }
+] 
